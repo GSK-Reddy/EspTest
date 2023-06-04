@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Client</title>
+  <script>
+    var socket = new WebSocket("ws://esp8266.local:81/");
+
+    socket.onopen = function(event) {
+      console.log("WebSocket connection established.");
+    };
+
+    const reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      // reader.result contains the contents of blob as a typed array
+      console.log(reader.result)
+      // console.log(reader.result[0])
+      // console.log(reader.result[1])
+      // console.log(reader.result[2])
+      const data1 = new Uint8Array(reader.result);
+      console.log(data1)
+      console.log(data1[0])
+      console.log(data1[1])
+      console.log(data1[2])
+    });
+
+    socket.onmessage = function(event) {
+      reader.readAsArrayBuffer(event.data);
+      var data = event.data.arrayBuffer();
+      console.log(data);
+      // // console.log();
+      // var uint8Array = new Uint8Array(data);
+      // console.log("Received data: " + uint8Array[0]);
+
+      // Convert the binary data to a hexadecimal string
+      // var hexString = Array.from(uint8Array, byte => byte.toString(16).padStart(2, '0')).join('');
+
+      // console.log("Received data: " + hexString);
+    };
+
+    function sendData() {
+      var data = new Uint8Array([97, 98, 99]);  // Replace with your byte array
+      socket.send(data);
+    }
+  </script>
+</head>
+<body>
+  <button onclick="sendData()">Send Data</button>
+</body>
+</html>
